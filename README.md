@@ -1,2 +1,3 @@
 # ProteinKit
-Display proteins and molecules using Swift
+
+A description of this package.
