@@ -1,5 +1,6 @@
 import Foundation
 import CStride
+import SceneKitPlus
 
 // Handles reading files and performing the stride algorithm
 public class Stride {
@@ -81,7 +82,9 @@ public class Stride {
                 
                 let area = cResidue.pointee.Prop.pointee.Solv
                 
-                let newResidue = Residue(type: type, structure: structure, phi: phi, psi: psi, area: area)
+                let atoms: [Atom] = getAtoms(fromCres: cResidue)
+                
+                let newResidue = Residue(type: type, structure: structure, phi: phi, psi: psi, area: area, atoms: atoms)
                 
                 cResidue.deallocate() // Frees the memory
                 
@@ -107,7 +110,7 @@ public class Stride {
         }
         return nil
     }
-    
+        
 }
 
 
@@ -120,4 +123,30 @@ private func unsafePointerToString<T>(value: T) -> String {
 }
 
 
+
+private func getAtoms(fromCres r: UnsafeMutablePointer<RESIDUE>) -> [Atom] {
+    
+    var atomsResult: [Atom] = []
+    
+    let coords = Mirror(reflecting: r.pointee.Coord).children.map({$0.value as! (Float,Float,Float)})
+    let atoms = Mirror(reflecting: r.pointee.AtomType).children.map({$0.value})
+    
+    for (i,atom) in atoms.enumerated() {
+        
+        let atomInfo = unsafePointerToString(value: atom)
+        if atomInfo.isEmpty || atomInfo == "H" {break}
+        
+        guard let at = getAtom(fromString: atomInfo, isPDB: true) else {continue}
+        let x = UFloat(coords[i].0)
+        let y = UFloat(coords[i].1)
+        let z = UFloat(coords[i].2)
+        
+        atomsResult.append(Atom(position: SCNVector3Make(x, y, z), type: at, number: i, info: atomInfo))
+        
+        
+    }
+    
+    return atomsResult
+    
+}
 

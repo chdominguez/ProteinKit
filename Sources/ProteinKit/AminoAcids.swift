@@ -1,13 +1,10 @@
 //
-//  File.swift
-//
-//
 //  Created by Christian Dominguez on 22/4/22.
 //
 
 import Foundation
 
-// Value type which contains the residue name, the structure, phi, psi angles and the area.
+// Value type which contains the residue name, the structure, phi, psi angles,the area and the atoms forming the residue.
 public struct Residue {
     // Default values:
     public let type: AminoAcid
@@ -15,6 +12,7 @@ public struct Residue {
     public let phi: Float
     public let psi: Float
     public let area: Float
+    public let atoms: [Atom]
 }
 
 // An enum that defines AminoAcids and its properties
@@ -235,8 +233,10 @@ public enum SecondaryStructure: String, CaseIterable {
     case alphaHelix = "H"
     case helix310 = "G"
     case phiHelix = "I"
+    
     /// Also known as beta-sheets
     case strand = "E"
+    
     case bridge = "B"
     case coil = "C"
     case turnI = "1"
@@ -250,4 +250,18 @@ public enum SecondaryStructure: String, CaseIterable {
     case GammaClassic = "@"
     case GammaInv = "&"
     case turn = "T"
+    
+    var priority: Int {
+        switch self {
+        case .coil, .turn, .turnI, .turnIp, .turnII, .turnIIp, .turnIV, .turnVIa, .turnVIb, .turnVIII:
+            return 1
+        case .alphaHelix, .helix310, .phiHelix:
+            return 2
+        case .strand, .bridge:
+            return 3
+        default:
+            return 4
+        }
+    }
+    
 }

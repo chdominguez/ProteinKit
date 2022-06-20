@@ -34,6 +34,7 @@ void Area(CHAIN **Chain, int NChain, COMMAND *Cmd)
 	  (*p1++) = (double)Chain[Cn]->Rsd[Res]->Coord[At][0];
 	  (*p1++) = (double)Chain[Cn]->Rsd[Res]->Coord[At][1];
 	  (*p1++) = (double)Chain[Cn]->Rsd[Res]->Coord[At][2];
+        double a = Chain[Cn]->Rsd[Res]->Coord[At][2];
 	  (*p2++) = GetAtomRadius(Chain[Cn]->Rsd[Res]->AtomType[At])+1.4;
 	}
   

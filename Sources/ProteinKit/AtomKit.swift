@@ -5,83 +5,102 @@
 //  Created by Christian Dominguez on 20/8/21.
 //
 
-import Foundation
+import SwiftUI
 import SceneKit
 
-struct Atom: Identifiable {
-    let id = UUID()
+public struct Atom: Identifiable {
     
-    var position: SCNVector3
-    var type: Element
-    var number: Int
+    public init(position: SCNVector3, type: Element, number: Int, info: String = "") {
+        
+        self.position = position
+        self.type = type
+        self.number = number
+        self.info = info
+        
+    }
+    
+    public let id = UUID()
+    
+    public var position: SCNVector3
+    public var type: Element
+    public var number: Int
   
-    var info: String = "" // Allows for further classification. For example: "CA", which denotes an alpha carbon in PDBs.
+    public var info: String // Allows for further classification. For example: "CA", which denotes an alpha carbon in PDBs.
 }
 
 /// Molecule class. Contains an array of atoms as its single property
-class Molecule {
-    var atoms: [Atom] = []
+public class Molecule {
+    
+    public init() {}
+    
+    public var atoms: [Atom] = []
 }
 
-struct CartoonPositions {
-    var positions: [SCNVector3] = []
-    var structure: SecondaryStructure = .alphaHelix
+public struct CartoonPositions {
+    
+    public init() {}
+    
+    public var positions: [SCNVector3] = []
+    public var structure: SecondaryStructure = .alphaHelix
 }
 
 /// Step class. Describes any molecular scene possible. Contains different optional variables depending on which
 /// type of file has been opened. It has support for accomodating multiple job types like:
 /// Gaussian - energy, isFinalStep, jobNumber, isInput
 /// XYZ - timestep
-class Step {
+public class Step {
+    
+    public init() {}
+    
     /// The step number of the job (for example in optimization calculations)
-    var stepNumber: Int?
+    public var stepNumber: Int?
     
     /// The molecule of this step. Contains the atom positions.
-    var molecule: Molecule?
+    public var molecule: Molecule?
     
     /// Keeping track if its a step from an input file
-    var isInput: Bool?
+    public var isInput: Bool?
     
     /// The energy of the system at this step
-    var energy: Double?
+    public var energy: Double?
     
     /// Atom vibrations calculation jobs
-    var frequencys: [Double]?
+    public var frequencys: [Double]?
     
     /// If the calculation ended with normal termination, set to true to the last step.
-    var isFinalStep: Bool = false
+    public var isFinalStep: Bool = false
     
     /// For packages that support multiple jobs on the same calculation i.e Gaussian's --link1--
-    var jobNumber: Int = 1
+    public var jobNumber: Int = 1
     
     /// For MD calculations, the time of this step.
-    var timestep: Int?
+    public var timestep: Int?
     
     /// For PDBs. Tells the renderer if the step contains a protein
-    var isProtein: Bool = false
+    public var isProtein: Bool = false
     
     /// For PDBs. Rendering the backbone only implies rendering these atoms
-    var backBone: Molecule?
+    public var backBone: Molecule?
     
     /// Residues present in this step
-    var res: [Residue]? = nil
+    public var res: [Residue] = []
 }
 
-struct Frequencies {
+public struct Frequencies {
     var freq: Double?
     var infrared: Double?
     var raman: Double?
 }
 
 #warning("TODO: Implement different bond types")
-enum bondTypes {
+public enum bondTypes {
     case single
     case double
     case triple
     case resonant
 }
 
-enum AtomStyle: String, CaseIterable {
+public enum AtomStyle: String, CaseIterable {
     case ballAndStick = "Ball and Stick"
     case backBone = "Backbone"
     case cartoon = "Cartoon"
@@ -89,7 +108,7 @@ enum AtomStyle: String, CaseIterable {
 
 //  PeriodicTable
 
-enum Element: String, CaseIterable {
+public enum Element: String, CaseIterable {
     
     case hydrogen       = "H"
     case helium         = "He"
@@ -211,7 +230,7 @@ enum Element: String, CaseIterable {
     case oganesson      = "Og"
     case dummy          = "X"
     
-    var name: String {
+    public var name: String {
         switch self {
         case .hydrogen:
             return "Hydrogen"
@@ -454,9 +473,8 @@ enum Element: String, CaseIterable {
         }
     }
     
-    #warning("TODO: Assign custom RGB colors")
     // Default atom colors
-    var color: Color {
+    public  var color: Color {
         switch self {
         case .hydrogen:
             return .white
@@ -485,7 +503,7 @@ enum Element: String, CaseIterable {
         case .aluminium:
             return .gray
         case .silicon:
-            return .black // TEMPORARY
+            return Color(red: 240/255, green: 200/255, blue: 160/255)
         case .phosphorus:
             return .orange
         case .sulphur:
@@ -496,7 +514,7 @@ enum Element: String, CaseIterable {
             return Color(red: 150/255, green: 23/255, blue: 0/255)
         case .iodine:
             return Color(red: 109/255, green: 0/255, blue: 143/255)
-        /// Noble gases
+        // Noble gases
         case .argon:
             return Color(red: 69/255, green: 165/255, blue: 245/255)
         case .krypton:
@@ -507,7 +525,7 @@ enum Element: String, CaseIterable {
             return Color(red: 69/255, green: 165/255, blue: 245/255)
         case .oganesson:
             return Color(red: 69/255, green: 165/255, blue: 245/255)
-        /// Alkali metals
+        // Alkali metals
         case .potassium:
             return .purple
         case .rubidium:
@@ -537,8 +555,8 @@ enum Element: String, CaseIterable {
         }
     }
 
-/// COVALENT RADIUS
-    var radius: CGFloat {
+// COVALENT RADIUS
+    public var radius: CGFloat {
         switch self {
         case .hydrogen:
             return 0.32
@@ -581,51 +599,7 @@ enum Element: String, CaseIterable {
         }
     }
 
-/// ATOMIC RADIUS
-///    var radius: CGFloat {
-///     switch self {
-///     case .hydrogen:
-///         return 1.10
-///     case .helium:
-///         return 1.40
-///     case .lithium:
-///         return 1.82
-///     case .beryllium:
-///         return 1.53
-///     case .boron:
-///         return 1.92
-///     case .carbon:
-///         return 1.70
-///     case .nitrogen:
-///         return 1.55
-///     case .oxygen:
-///         return 1.52
-///     case .fluorine:
-///         return 1.47
-///     case .neon:
-///         return 1.54
-///     case .sodium:
-///         return 2.27
-///     case .magnesium:
-///         return 1.73
-///     case .aluminium:
-///         return 1.84
-///     case .silicon:
-///         return 2.10
-///     case .phosphorus:
-///         return 1.80
-///     case .sulphur:
-///         return 1.80
-///     case .chlorine:
-///         return 1.75
-///     case .argon:
-///         return 1.88
-///     default:
-///         return 2.0
-///     }
-/// }
-
-    var atomicNumber: Int {
+    public var atomicNumber: Int {
         switch self {
         case .hydrogen:
             return 1
@@ -868,7 +842,7 @@ enum Element: String, CaseIterable {
         }
     }
 
-    var canDoubleBond: Bool {
+    public var canDoubleBond: Bool { // Temporary
         switch self {
         case .hydrogen:
             return false
