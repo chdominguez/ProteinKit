@@ -178,8 +178,8 @@ int CheckChain(CHAIN *Chain, COMMAND *Cmd)
 int NotValid(CHAIN *Chain, char *Message)
 {
   
-  fprintf(stderr,"IGNORED %s %c ",Chain->File,SpaceToDash(Chain->Id));
-  fprintf(stderr,"(%s)\n",Message);
+  //fprintf(stderr,"IGNORED %s %c ",Chain->File,SpaceToDash(Chain->Id));
+  //fprintf(stderr,"(%s)\n",Message);
   Chain->Valid = NO;
   return(FAILURE);
   

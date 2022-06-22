@@ -28,26 +28,27 @@ internal func spline(_ v1: SCNVector3, _ v2: SCNVector3, _ v3: SCNVector3, _ v4:
     
     let b = SCNMatrix4([
         -1, 3, -3, 1,
-        3, -6, 3, 0,
-        -3, 0, 3, 0,
-        1, 4, 1, 0,
-    ]) * 4
+         3, -6, 3, 0,
+         -3, 0, 3, 0,
+         1, 4, 1, 0,
+    ]) * (1.0/6.0)
     
     let g = SCNMatrix4([
-        v1.dx, v1.dx, v1.dx, 1,
-        v2.dx, v2.dx, v2.dx, 1,
-        v3.dx, v3.dx, v3.dx, 1,
-        v4.dx, v4.dx, v4.dx, 1,
+        v1.dx, v1.dy, v1.dz, 1,
+        v2.dx, v2.dy, v2.dz, 1,
+        v3.dx, v3.dy, v3.dz, 1,
+        v4.dx, v4.dy, v4.dz, 1,
     ])
+        
+    var m1 = s * b
     
-    var m = s * b * g
+    var m = m1 * g
     
     var result: [SCNVector3] = []
     
-    var v = SCNVector3Make(m.m41 / m.m44, m.m41 / m.m44, m.m43 / m.m44)
-
-    v.roundTo(n: 10)
+    var v = SCNVector3Make(m.m41 / m.m44, m.m42 / m.m44, m.m43 / m.m44)
     
+    v.roundTo(n: 10)
     result.append(v)
 
     for k in 0..<n {

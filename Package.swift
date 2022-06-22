@@ -13,6 +13,7 @@ let package = Package(
             targets: ["ProteinKit"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/heckj/MeshGenerator", branch: "main"),
         .package(name: "SceneKitPlus", path: "/Users/cdominguez/Developer/SceneKitPlus")
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
@@ -24,7 +25,7 @@ let package = Package(
                 dependencies: [],
                 path: "Sources/Stride"),
         .target(name: "ProteinKit",
-                dependencies: ["CStride", "SceneKitPlus"]),
+                dependencies: ["CStride", "SceneKitPlus", "MeshGenerator"]),
         .testTarget(
             name: "ProteinKitTests",
             dependencies: ["ProteinKit", "SceneKitPlus"])

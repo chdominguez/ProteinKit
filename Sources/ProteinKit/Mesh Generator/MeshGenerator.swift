@@ -8,10 +8,11 @@
 import SceneKitPlus
 import SwiftUI
 import SceneKit
+import MeshGenerator
 
 public struct pMesh {
-    var triangles: [SCNGeometrySource] = []
-    var lines: [SCNGeometrySource] = []
+    var triangles: [Triangle] = []
+    var lines: [LineSegment] = []
     
     mutating func add(_ m: pMesh) {
         self.triangles += m.triangles
@@ -131,18 +132,35 @@ public class ProteinNode {
     
     public func getProteinNode() throws -> SCNNode {
         
-        guard let mesh = ProteinMesh().createChainMesh(chain: residues) else {throw ProteinKitError.badMesh}
+        guard let meshes = ProteinMesh().createChainMesh(chain: residues) else {throw ProteinKitError.badMesh}
         
-        let element = [SCNGeometryElement(indices: mesh.triangles.map({$0.vectorCount - 1}), primitiveType: .triangles)]
-        #warning("Left here.. continue tomorrow...")
+        let node = SCNNode()
         
-        let lines = SCNGeometry(sources: mesh.lines, elements: nil)
+        let colors: [UColor] = [.red, .blue, .brown, .cyan, .systemPink, .purple, .gray, .black, .white]
         
-        return SCNNode()
+        var i = 0
+        
+        for mesh in meshes {
+            
+            
+            let material = SCNMaterial()
+            material.diffuse.contents = colors[i]
+            let geo = SCNGeometry(mesh)
+            geo.materials = [material]
+            node.addChildNode(SCNNode(geometry: geo))
+            
+            i += 1
+            
+            if i > colors.count - 1 {i = 0}
+            
+        }
+
+        return node
         
     }
     
 }
+
 
 //MARK: Protein mesh generator
 private class ProteinMesh {
@@ -161,13 +179,14 @@ private class ProteinMesh {
         
     }
     
-    internal func createChainMesh(chain: [Residue]) -> pMesh? {
-        var mesh = pMesh()
+    internal func createChainMesh(chain: [Residue]) -> [Mesh]? {
+        var mesh: [Mesh] = []
         
         var planes: [PeptidePlane] = []
         
         
         #warning("account for errors in pdb with too short chains")
+        #warning("PDBREADER THERE ARE ATOMS WITH ' primas")
         for i in 0..<chain.count - 2 {
             guard let p = newPeptidePlane(r1: chain[i], r2: chain[i+1], r3: chain[i+2]) else { return nil }
             planes.append(p)
@@ -190,13 +209,13 @@ private class ProteinMesh {
             let pp3 = planes[i+2]
             let pp4 = planes[i+3]
             let m = createSegmentMesh(i, n, pp1, pp2, pp3, pp4)
-            mesh.add(m)
+            mesh.append(m)
         }
         
         return mesh
     }
     
-    private func createSegmentMesh(_ i: Int, _ n: Int, _ pp1: PeptidePlane, _ pp2: PeptidePlane, _ pp3: PeptidePlane, _ pp4: PeptidePlane) -> pMesh {
+    private func createSegmentMesh(_ i: Int, _ n: Int, _ pp1: PeptidePlane, _ pp2: PeptidePlane, _ pp3: PeptidePlane, _ pp4: PeptidePlane) -> Mesh {
         let splineSteps = 32
         let profileDetail = 16
         let type0 = pp2.residue1.structure
@@ -238,8 +257,8 @@ private class ProteinMesh {
             splines2.append(splineForPlanes(pp1, pp2, pp3, pp4, splineSteps, p2.dx, p2.dy))
         }
         
-        var triangles: [SCNGeometrySource] = []
-        var lines: [SCNGeometrySource] = []
+        var triangles: [Triangle] = []
+        var lines: [LineSegment] = []
         
         for i in 0..<splineSteps {
             var t0 = easeFunc(Double(i)/Double(splineSteps))
@@ -275,9 +294,7 @@ private class ProteinMesh {
             }
         }
         
-        print(triangles.count)
-        
-        return pMesh(triangles: triangles, lines: lines)
+        return Mesh(triangles)
     }
     
     
@@ -536,10 +553,22 @@ internal func InOutSquare(_ t: Double) -> Double {
 
 //MARK: Extra funcs
 
-func triangulateQuad(_ triangles: inout [SCNGeometrySource], _ p1: SCNVector3, _ p2: SCNVector3, _ p3: SCNVector3, _ p4: SCNVector3, _ c1: UColor, _ c2: UColor, _ c3: UColor, _ c4: UColor) {
+func triangulateQuad(_ triangles: inout [Triangle], _ p1: SCNVector3, _ p2: SCNVector3, _ p3: SCNVector3, _ p4: SCNVector3, _ c1: UColor, _ c2: UColor, _ c3: UColor, _ c4: UColor) {
     
-    let t1 = SCNGeometrySource(vertices: [p1,p2,p3])
-    let t2 = SCNGeometrySource(vertices: [p1,p3,p2])
+    let vertex1 = Vertex(x: p1.dx, y: p1.dy, z: p1.dz)
+    let vertex2 = Vertex(x: p2.dx, y: p2.dy, z: p2.dz)
+    let vertex3 = Vertex(x: p3.dx, y: p3.dy, z: p3.dz)
+    let vertex4 = Vertex(x: p4.dx, y: p4.dy, z: p4.dz) // V4 same as V1 why?
+
+    if vertex1 == vertex4 {return}
+    if vertex1 == vertex2 {return}
+    if vertex1 == vertex3 {return}
+    
+    if vertex2 == vertex3 {return}
+    if vertex3 == vertex4 {return}
+    
+    guard let t1 = Triangle([vertex1, vertex2, vertex3]) else {fatalError()}
+    guard let t2 = Triangle([vertex1, vertex3, vertex4]) else {fatalError()}
     
     triangles.append(t1)
     triangles.append(t2)
