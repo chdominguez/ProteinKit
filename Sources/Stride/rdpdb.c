@@ -66,7 +66,7 @@ int ReadPDBFile(CHAIN **Chain, int *Cn, COMMAND *Cmd)
       Process_ENDMDL(Buffer,Chain,Cn);
       break;
     }
-    else if(!strncmp(Buffer,"HELIX",5) && !Process_HELIX(Buffer,Chain,Cn,Cmd)) 
+    else if(!strncmp(Buffer,"HELIX",5) && !Process_HELIX(Buffer,Chain,Cn,Cmd))
       return(FAILURE);
     else if(!strncmp(Buffer,"SHEET",5) && !Process_SHEET(Buffer,Chain,Cn,Cmd)) 
       return(FAILURE);

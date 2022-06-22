@@ -39,10 +39,8 @@ internal func spline(_ v1: SCNVector3, _ v2: SCNVector3, _ v3: SCNVector3, _ v4:
         v3.dx, v3.dy, v3.dz, 1,
         v4.dx, v4.dy, v4.dz, 1,
     ])
-        
-    var m1 = s * b
     
-    var m = m1 * g
+    var m = s * b * g
     
     var result: [SCNVector3] = []
     
@@ -51,7 +49,7 @@ internal func spline(_ v1: SCNVector3, _ v2: SCNVector3, _ v3: SCNVector3, _ v4:
     v.roundTo(n: 10)
     result.append(v)
 
-    for k in 0..<n {
+    for _ in 0..<n {
         m.m41 = m.m41 + m.m31
         m.m42 = m.m42 + m.m32
         m.m43 = m.m43 + m.m33

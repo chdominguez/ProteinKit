@@ -49,7 +49,7 @@ internal class PeptidePlane {
         }
         
         if t2.priority > t3.priority && t1.priority == t2.priority {
-            type2 = t2
+            type2 = t3
         }
         
         return (type1, type2)
@@ -115,7 +115,7 @@ internal class PeptidePlane {
         var p2: [SCNVector3] = []
         
         switch type1 {
-        case .alphaHelix, .helix310, .phiHelix:
+        case .alphaHelix:
             if type0 == .strand || type0 == .bridge {
                 p1 = roundedRectangleProfile(n, 0, 0)
             }
@@ -125,7 +125,7 @@ internal class PeptidePlane {
             
             p1 = translateProfile(p1, 0, offset1)
             
-        case .strand, .bridge:
+        case .strand:
             if type2 == .strand {
                 p1 = rectangleProfile(n, arrowWidth, arrowHeight)
             } else {
@@ -140,10 +140,10 @@ internal class PeptidePlane {
         }
         
         switch type2 {
-        case .alphaHelix, .helix310, .phiHelix:
+        case .alphaHelix:
             p2 = roundedRectangleProfile(n, ribbonWidth, ribbonHeight)
             p2 = translateProfile(p2, 0, offset2)
-        case .strand, .bridge:
+        case .strand:
             p2 = rectangleProfile(n, arrowWidth, arrowHeight)
         default:
             p2 = ellipseProfile(n, tubeSize, tubeSize)

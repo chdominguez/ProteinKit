@@ -6,6 +6,7 @@
 //
 
 import SceneKitPlus
+import Combine
 
 private enum PDBErrors: Error {
     case PDBError
@@ -38,6 +39,11 @@ public class PDBReader {
         
         // Backbone atoms
         let backBone = Molecule()
+        
+        #warning("Temporal workaround for not using stride when pdb has info")
+        //Temporal
+        var structures: [SecondaryStructure] = []
+        var structuresFromTo: [(Int,Int)] = []
         
         for line in splitFile {
             //Increment current line by 1 to keep track if an error happens
@@ -85,10 +91,10 @@ public class PDBReader {
                     
                     var atom = Atom(position: position, type: element, number: natoms)
                     
+                    atom.info = atomString
                     
                     switch atomString {
                     case "N", "C", "CA", "O": // Save backbone nitrogens, alpha carbons and peptide bonded carbons
-                        atom.info = atomString
                         backBone.atoms.append(atom)
                     default: ()
                     }
@@ -96,7 +102,20 @@ public class PDBReader {
                     currentMolecule.atoms.append(atom)
                     
                 }
-                //MARK: Default
+            case "HELIX":
+                do {
+                    structures.append(.alphaHelix)
+                    let from = Int(splitted[5])!
+                    let to = Int(splitted[8])!
+                    structuresFromTo.append((from,to))
+                }
+            case "SHEET":
+                do {
+                    structures.append(.strand)
+                    let from = Int(splitted[6])!
+                    let to = Int(splitted[9])!
+                    structuresFromTo.append((from,to))
+                }
             default: continue
             }
         }

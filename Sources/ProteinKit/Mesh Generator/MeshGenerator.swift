@@ -88,7 +88,6 @@ internal func rectangleProfile(_ n: Int, _ w: Double, _ h: Double) -> [SCNVector
             result.append(p)
         }
     }
-    
     return result
 }
 
@@ -134,24 +133,53 @@ public class ProteinNode {
         
         guard let meshes = ProteinMesh().createChainMesh(chain: residues) else {throw ProteinKitError.badMesh}
         
+        var strands = 0
+        var helix = 0
+        
+        var prev: SecondaryStructure = .GammaInv
+        
+        for residue in residues {
+            if residue.structure != prev {
+                if residue.structure == .strand  {
+                    strands += 1
+                }
+                if residue.structure == .alphaHelix {
+                    helix += 1
+                }
+                prev = residue.structure
+            }
+        }
+        
         let node = SCNNode()
         
-        let colors: [UColor] = [.red, .blue, .brown, .cyan, .systemPink, .purple, .gray, .black, .white]
-        
         var i = 0
+        
+        var j = 0
+        
+        var ca: UFloat {UFloat(i)}
+        
+        var color = UColor(red: 255/255, green: 0/255, blue: 0/255, alpha: 1.0)
         
         for mesh in meshes {
             
             
             let material = SCNMaterial()
-            material.diffuse.contents = colors[i]
+            material.diffuse.contents = color
             let geo = SCNGeometry(mesh)
             geo.materials = [material]
             node.addChildNode(SCNNode(geometry: geo))
             
             i += 1
             
-            if i > colors.count - 1 {i = 0}
+            if i > 255 {
+                i = 0
+                if j == 0 {j = 1}
+                if j == 1 {j = 2}
+            }
+            
+            if j == 0 {color = UColor(red: (255-ca)/255, green: 0/255, blue: ca/255, alpha: 1.0)}
+            if j == 1 {color = UColor(red: 0/255, green: ca/255, blue: (255-ca)/255, alpha: 1.0)}
+            if j == 2 {color = UColor(red: ca/255, green: (255-ca)/255, blue: 0/255, alpha: 1.0)}
             
         }
 
@@ -166,8 +194,8 @@ public class ProteinNode {
 private class ProteinMesh {
     
     private func newPeptidePlane(r1: Residue, r2: Residue, r3: Residue) -> PeptidePlane? {
-        
-        guard let ca1 = r1.atoms.first(where: { $0.info == "CA" }), let ca2 = r2.atoms.first(where: { $0.info == "CA" }), let o1 = r1.atoms.first(where: { $0.info == "O" }) else { return nil }
+
+        guard let ca1 = r1.atoms.last(where: { $0.info == "CA" }), let ca2 = r2.atoms.last(where: { $0.info == "CA" }), let o1 = r1.atoms.last(where: { $0.info == "O" }) else { return nil }
         
         let a = (ca2.position - ca1.position).normalized()
         let b = (o1.position - ca1.position).normalized()
@@ -184,11 +212,10 @@ private class ProteinMesh {
         
         var planes: [PeptidePlane] = []
         
-        
         #warning("account for errors in pdb with too short chains")
         #warning("PDBREADER THERE ARE ATOMS WITH ' primas")
         for i in 0..<chain.count - 2 {
-            guard let p = newPeptidePlane(r1: chain[i], r2: chain[i+1], r3: chain[i+2]) else { return nil }
+            guard let p = newPeptidePlane(r1: chain[i], r2: chain[i+1], r3: chain[i+2]) else { continue }
             planes.append(p)
         }
         
@@ -215,22 +242,24 @@ private class ProteinMesh {
         return mesh
     }
     
+    
+    //MARK: Create segment mesh
     private func createSegmentMesh(_ i: Int, _ n: Int, _ pp1: PeptidePlane, _ pp2: PeptidePlane, _ pp3: PeptidePlane, _ pp4: PeptidePlane) -> Mesh {
         let splineSteps = 32
         let profileDetail = 16
-        let type0 = pp2.residue1.structure
+        var type0 = pp2.residue1.structure
         
         let (type1, type2) = pp2.transition()
         
         let (c1, c2) = pp2.segmentColors()
         
-        var (profile1, profile2) = pp1.segmentProfiles(pp2: pp2, n: profileDetail)
+        var (profile1, profile2) = pp2.segmentProfiles(pp2: pp3, n: profileDetail)
         
         var easeFunc: (Double) -> Double
         
         easeFunc = linear(_:)
         
-        if !(type0 == .strand && type2 != .strand) {
+        if !(type1 == .strand && type2 != .strand) {
             easeFunc = inOutQuad(_:)
         }
         if type0 == .strand && type1 != .strand {
@@ -258,11 +287,10 @@ private class ProteinMesh {
         }
         
         var triangles: [Triangle] = []
-        var lines: [LineSegment] = []
         
         for i in 0..<splineSteps {
-            var t0 = easeFunc(Double(i)/Double(splineSteps))
-            var t1 = easeFunc(Double(i+1)/Double(splineSteps))
+            let t0 = easeFunc(Double(i)/Double(splineSteps))
+            let t1 = easeFunc(Double(i+1)/Double(splineSteps))
             
             if i == 0 && type1 == .strand && type2 != .strand {
                 let p00 = splines1[0][i]
@@ -555,17 +583,17 @@ internal func InOutSquare(_ t: Double) -> Double {
 
 func triangulateQuad(_ triangles: inout [Triangle], _ p1: SCNVector3, _ p2: SCNVector3, _ p3: SCNVector3, _ p4: SCNVector3, _ c1: UColor, _ c2: UColor, _ c3: UColor, _ c4: UColor) {
     
-    let vertex1 = Vertex(x: p1.dx, y: p1.dy, z: p1.dz)
-    let vertex2 = Vertex(x: p2.dx, y: p2.dy, z: p2.dz)
-    let vertex3 = Vertex(x: p3.dx, y: p3.dy, z: p3.dz)
-    let vertex4 = Vertex(x: p4.dx, y: p4.dy, z: p4.dz) // V4 same as V1 why?
+    var vertex1 = Vertex(x: p1.dx, y: p1.dy, z: p1.dz)
+    var vertex2 = Vertex(x: p2.dx, y: p2.dy, z: p2.dz)
+    var vertex3 = Vertex(x: p3.dx, y: p3.dy, z: p3.dz)
+    var vertex4 = Vertex(x: p4.dx, y: p4.dy, z: p4.dz) // V4 same as V1 why?
 
-    if vertex1 == vertex4 {return}
-    if vertex1 == vertex2 {return}
-    if vertex1 == vertex3 {return}
+    if vertex1 == vertex4 {vertex4 = Vertex(x: p4.dx + 0.1, y: p4.dy, z: p4.dz)}
+    if vertex1 == vertex2 {vertex2 = Vertex(x: p2.dx + 0.1, y: p2.dy, z: p2.dz)}
+    if vertex1 == vertex3 {vertex3 = Vertex(x: p3.dx + 0.1, y: p3.dy, z: p3.dz)}
     
-    if vertex2 == vertex3 {return}
-    if vertex3 == vertex4 {return}
+    if vertex2 == vertex3 {vertex3 = Vertex(x: p3.dx + 0.1, y: p3.dy, z: p3.dz)}
+    if vertex3 == vertex4 {vertex4 = Vertex(x: p4.dx + 0.1, y: p4.dy, z: p4.dz)}
     
     guard let t1 = Triangle([vertex1, vertex2, vertex3]) else {fatalError()}
     guard let t2 = Triangle([vertex1, vertex3, vertex4]) else {fatalError()}

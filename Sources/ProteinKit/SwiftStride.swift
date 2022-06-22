@@ -130,7 +130,6 @@ private func getAtoms(fromCres r: UnsafeMutablePointer<RESIDUE>) -> [Atom] {
     
     let coords = Mirror(reflecting: r.pointee.Coord).children.map({$0.value as! (Float,Float,Float)})
     let atoms = Mirror(reflecting: r.pointee.AtomType).children.map({$0.value})
-    
     for (i,atom) in atoms.enumerated() {
         
         let atomInfo = unsafePointerToString(value: atom)
