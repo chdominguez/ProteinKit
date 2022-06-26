@@ -175,11 +175,12 @@ public class ProteinNode {
                 i = 0
                 if j == 0 {j = 1}
                 if j == 1 {j = 2}
+                if j == 2 {j = 0}
             }
             
-            if j == 0 {color = UColor(red: (255-ca)/255, green: 0/255, blue: ca/255, alpha: 1.0)}
-            if j == 1 {color = UColor(red: 0/255, green: ca/255, blue: (255-ca)/255, alpha: 1.0)}
-            if j == 2 {color = UColor(red: ca/255, green: (255-ca)/255, blue: 0/255, alpha: 1.0)}
+            if j == 0 {color = UColor(red: (255-ca)/255, green: 255/255, blue: ca/255, alpha: 1.0)}
+            if j == 1 {color = UColor(red: 0.3, green: ca/255, blue: (255-ca)/255, alpha: 1.0)}
+            if j == 2 {color = UColor(red: 0.5, green: (255-ca)/255, blue: 0.5/255, alpha: 1.0)}
             
         }
 
@@ -583,17 +584,17 @@ internal func InOutSquare(_ t: Double) -> Double {
 
 func triangulateQuad(_ triangles: inout [Triangle], _ p1: SCNVector3, _ p2: SCNVector3, _ p3: SCNVector3, _ p4: SCNVector3, _ c1: UColor, _ c2: UColor, _ c3: UColor, _ c4: UColor) {
     
-    var vertex1 = Vertex(x: p1.dx, y: p1.dy, z: p1.dz)
-    var vertex2 = Vertex(x: p2.dx, y: p2.dy, z: p2.dz)
-    var vertex3 = Vertex(x: p3.dx, y: p3.dy, z: p3.dz)
-    var vertex4 = Vertex(x: p4.dx, y: p4.dy, z: p4.dz) // V4 same as V1 why?
-
-    if vertex1 == vertex4 {vertex4 = Vertex(x: p4.dx + 0.1, y: p4.dy, z: p4.dz)}
-    if vertex1 == vertex2 {vertex2 = Vertex(x: p2.dx + 0.1, y: p2.dy, z: p2.dz)}
-    if vertex1 == vertex3 {vertex3 = Vertex(x: p3.dx + 0.1, y: p3.dy, z: p3.dz)}
+    let vertex1 = Vertex(x: p1.dx, y: p1.dy, z: p1.dz)
+    let vertex2 = Vertex(x: p2.dx, y: p2.dy, z: p2.dz)
+    let vertex3 = Vertex(x: p3.dx, y: p3.dy, z: p3.dz)
+    let vertex4 = Vertex(x: p4.dx, y: p4.dy, z: p4.dz) // V4 same as V1 why?
     
-    if vertex2 == vertex3 {vertex3 = Vertex(x: p3.dx + 0.1, y: p3.dy, z: p3.dz)}
-    if vertex3 == vertex4 {vertex4 = Vertex(x: p4.dx + 0.1, y: p4.dy, z: p4.dz)}
+    if vertex1 == vertex4 {return}
+    if vertex1 == vertex2 {return}
+    if vertex1 == vertex3 {return}
+//    
+    if vertex2 == vertex3 {return}
+    if vertex3 == vertex4 {return}
     
     guard let t1 = Triangle([vertex1, vertex2, vertex3]) else {fatalError()}
     guard let t2 = Triangle([vertex1, vertex3, vertex4]) else {fatalError()}

@@ -58,8 +58,8 @@ void ContactOrder(CHAIN **Chain, int NChain, COMMAND *Cmd )
     CO = 100.0*CO/NumberOfContacts;
     CO /= (To-From+1);
     
-    printf("%s %c %d ( %s ) %d ( %s ) %5.1f\n",
-	   Chain[Cn]->PdbIdent,SpaceToDash(Chain[Cn]->Id),From,PDB_Start,To-1,PDB_End,CO);
+    //printf("%s %c %d ( %s ) %d ( %s ) %5.1f\n",
+	   //Chain[Cn]->PdbIdent,SpaceToDash(Chain[Cn]->Id),From,PDB_Start,To-1,PDB_End,CO);
   }
     
     die("Bad exit from contact order");

@@ -30,9 +30,9 @@ void ContactMap(CHAIN **Chain, int NChain, COMMAND *Cmd )
 
 	  D = Dist(Chain[Cn1]->Rsd[Res1]->Coord[CA1],
 		   Chain[Cn2]->Rsd[Res2]->Coord[CA2]);
-	  printf("%c %d <-> %c %d : %7.3f\n",
-		 SpaceToDash(Chain[Cn1]->Id),Res1,
-		 SpaceToDash(Chain[Cn2]->Id),Res2,D);
+//	  printf("%c %d <-> %c %d : %7.3f\n",
+//		 SpaceToDash(Chain[Cn1]->Id),Res1,
+//		 SpaceToDash(Chain[Cn2]->Id),Res2,D);
 	}
       }
     }

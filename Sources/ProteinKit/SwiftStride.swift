@@ -32,12 +32,14 @@ public class Stride {
             }
         }
         
+        var error: Int8 = 0
+        
         var cArgs = arguments.map {strdup($0)}
         
         if showReport {
-            result = stride(Int32(arguments.count), &cArgs, 1)
+            result = stride(Int32(arguments.count), &cArgs, 1, &error)
         } else {
-            result = stride(Int32(arguments.count), &cArgs, 0)
+            result = stride(Int32(arguments.count), &cArgs, 0, &error)
         }
 
         // Deallocate arguments

@@ -309,6 +309,7 @@ typedef struct {
 typedef struct {
     CHAIN** chain;
     int NChain;
+    int error;
 } RChain;
 
 #include "protot.h"
