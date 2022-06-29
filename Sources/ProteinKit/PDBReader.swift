@@ -13,30 +13,20 @@ private enum PDBErrors: Error {
 }
 
 public class PDBReader {
-    
     public init() { }
-    
     public var steps: [Step] = []
-    
     public func readPDB(from fileURL: URL) throws {
-        
         let splitFile = try! String(contentsOf: fileURL).split(separator: "\n")
-        
         var errorLine: Int = 0
-        
         // Assign the PDB error for cleaner code
         //let pdbError = AtomicErrors.pdbError
-        
         // Variable to save current step atom positions
         let currentMolecule = Molecule()
-        
         // Some pdbs have variable column size, with data placed in different columns
         var ncolumns = 0 // Number of columns
         var dI = 0 // Distance index. Column where X coordinates are.
-        
         // Keep track of the number of atoms
         var natoms = 0
-        
         // Backbone atoms
         let backBone = Molecule()
         
@@ -102,20 +92,20 @@ public class PDBReader {
                     currentMolecule.atoms.append(atom)
                     
                 }
-            case "HELIX":
-                do {
-                    structures.append(.alphaHelix)
-                    let from = Int(splitted[5])!
-                    let to = Int(splitted[8])!
-                    structuresFromTo.append((from,to))
-                }
-            case "SHEET":
-                do {
-                    structures.append(.strand)
-                    let from = Int(splitted[6])!
-                    let to = Int(splitted[9])!
-                    structuresFromTo.append((from,to))
-                }
+//            case "HELIX":
+//                do {
+//                    structures.append(.alphaHelix)
+//                    let from = Int(splitted[5])!
+//                    let to = Int(splitted[8])!
+//                    structuresFromTo.append((from,to))
+//                }
+//            case "SHEET":
+//                do {
+//                    structures.append(.strand)
+//                    let from = Int(splitted[6])!
+//                    let to = Int(splitted[9])!
+//                    structuresFromTo.append((from,to))
+//                }
             default: continue
             }
         }

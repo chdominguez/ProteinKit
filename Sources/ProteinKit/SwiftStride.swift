@@ -31,15 +31,13 @@ public class Stride {
                 arguments.append(a)
             }
         }
-        
-        var error: Int8 = 0
-        
+               
         var cArgs = arguments.map {strdup($0)}
         
         if showReport {
-            result = stride(Int32(arguments.count), &cArgs, 1, &error)
+            result = stride(Int32(arguments.count), &cArgs, 1)
         } else {
-            result = stride(Int32(arguments.count), &cArgs, 0, &error)
+            result = stride(Int32(arguments.count), &cArgs, 0)
         }
 
         // Deallocate arguments

@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "meshgenerator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heckj/MeshGenerator",
+      "state" : {
+        "branch" : "main",
+        "revision" : "5ac0bb4871fedb83e0f916a1e83ed2917e4c1b4a"
+      }
+    },
+    {
+      "identity" : "scenekitplus",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/chdominguez/SceneKitPlus",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4a1f923d35f4486a02aecc6556605a3f92e62f1c"
+      }
+    }
+  ],
+  "version" : 2
+}

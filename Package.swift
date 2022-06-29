@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/heckj/MeshGenerator", branch: "main"),
-        .package(name: "SceneKitPlus", path: "/Users/cdominguez/Developer/SceneKitPlus")
+        .package(url: "https://github.com/chdominguez/SceneKitPlus", branch: "main")
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
     ],

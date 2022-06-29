@@ -27,10 +27,10 @@ internal func roundedRectangleProfile(_ n: Int, _ w: Double, _ h: Double) -> [SC
     let hw = w/2 - r
     let hh = h / 2
     let segments = [
-        [SCNVector3Make(hw, hh, 0), SCNVector3Make(-hw, hh, 0)],
-        [SCNVector3Make(-hw, 0, 0), SCNVector3Make(0, 0, 0)],
-        [SCNVector3Make(-hw, -hh, 0), SCNVector3Make(hw, -hh, 0)],
-        [SCNVector3Make(hw, 0, 0), SCNVector3Make(0, 0, 0)]
+        [SCNVector3(hw, hh, 0), SCNVector3(-hw, hh, 0)],
+        [SCNVector3(-hw, 0, 0), SCNVector3(0, 0, 0)],
+        [SCNVector3(-hw, -hh, 0), SCNVector3(hw, -hh, 0)],
+        [SCNVector3(hw, 0, 0), SCNVector3(0, 0, 0)]
     ]
     
     let m = n / 4
@@ -40,7 +40,7 @@ internal func roundedRectangleProfile(_ n: Int, _ w: Double, _ h: Double) -> [SC
     for (si, segment) in segments.enumerated() {
         for i in 0..<m {
             t = Double(i) / Double(m)
-            var p = SCNVector3Make(0, 0, 0)
+            var p = SCNVector3(0, 0, 0)
             
             switch si {
             case 0, 2:
@@ -49,12 +49,12 @@ internal func roundedRectangleProfile(_ n: Int, _ w: Double, _ h: Double) -> [SC
                 let a = Double.pi / 2 + Double.pi * t
                 let x = cos(a) * r
                 let y = sin(a) * r
-                p = segment[0] + SCNVector3Make(x, y, 0)
+                p = segment[0] + SCNVector3(x, y, 0)
             case 3:
                 let a = 3*Double.pi / 2 + Double.pi * t
                 let x = cos(a) * r
                 let y = sin(a) * r
-                p = segment[0] + SCNVector3Make(x, y, 0)
+                p = segment[0] + SCNVector3(x, y, 0)
             default:
                 fatalError("Error in roundedRectangleProfile. 'si' (segments) exceeded the valid maximum number defined above (3)")
             }
@@ -73,10 +73,10 @@ internal func rectangleProfile(_ n: Int, _ w: Double, _ h: Double) -> [SCNVector
     let hh = h / 2
     
     let segments = [
-        [SCNVector3Make(hw, hh, 0), SCNVector3Make(-hw, hh, 0)],
-        [SCNVector3Make(-hw, hh, 0), SCNVector3Make(-hw, -hh, 0)],
-        [SCNVector3Make(-hw, -hh, 0), SCNVector3Make(hw, -hh, 0)],
-        [SCNVector3Make(hw, -hh, 0), SCNVector3Make(hw, hh, 0)]
+        [SCNVector3(hw, hh, 0), SCNVector3(-hw, hh, 0)],
+        [SCNVector3(-hw, hh, 0), SCNVector3(-hw, -hh, 0)],
+        [SCNVector3(-hw, -hh, 0), SCNVector3(hw, -hh, 0)],
+        [SCNVector3(hw, -hh, 0), SCNVector3(hw, hh, 0)]
     ]
     
     let m = n / 4
@@ -98,7 +98,7 @@ internal func ellipseProfile(_ n: Int, _ w: Double, _ h: Double) -> [SCNVector3]
         let a = t*2*Double.pi + Double.pi / 4
         let x = cos(a) * w / 2
         let y = sin(a) * h / 2
-        result.append(SCNVector3Make(x, y, 0))
+        result.append(SCNVector3(x, y, 0))
     }
     return result
 }
@@ -107,92 +107,15 @@ internal func translateProfile(_ p1: [SCNVector3], _ dx: Double, _ dy: Double) -
     var result: [SCNVector3] = []
     
     for i in 0..<p1.count {
-        result.append( p1[i] + SCNVector3Make(dx, dy, 0) )
+        result.append( p1[i] + SCNVector3(dx, dy, 0) )
     }
     
     return result
     
 }
 
-//MARK: ProteinKit error enums
-public enum ProteinKitError: Error {
-    case badMesh
-}
-
-//MARK: Main class. Generate SCNNode
-
-public class ProteinNode {
-    
-    let residues: [Residue]
-    
-    public init(residues: [Residue]) {
-        self.residues = residues
-    }
-    
-    public func getProteinNode() throws -> SCNNode {
-        
-        guard let meshes = ProteinMesh().createChainMesh(chain: residues) else {throw ProteinKitError.badMesh}
-        
-        var strands = 0
-        var helix = 0
-        
-        var prev: SecondaryStructure = .GammaInv
-        
-        for residue in residues {
-            if residue.structure != prev {
-                if residue.structure == .strand  {
-                    strands += 1
-                }
-                if residue.structure == .alphaHelix {
-                    helix += 1
-                }
-                prev = residue.structure
-            }
-        }
-        
-        let node = SCNNode()
-        
-        var i = 0
-        
-        var j = 0
-        
-        var ca: UFloat {UFloat(i)}
-        
-        var color = UColor(red: 255/255, green: 0/255, blue: 0/255, alpha: 1.0)
-        
-        for mesh in meshes {
-            
-            
-            let material = SCNMaterial()
-            material.diffuse.contents = color
-            let geo = SCNGeometry(mesh)
-            geo.materials = [material]
-            node.addChildNode(SCNNode(geometry: geo))
-            
-            i += 1
-            
-            if i > 255 {
-                i = 0
-                if j == 0 {j = 1}
-                if j == 1 {j = 2}
-                if j == 2 {j = 0}
-            }
-            
-            if j == 0 {color = UColor(red: (255-ca)/255, green: 255/255, blue: ca/255, alpha: 1.0)}
-            if j == 1 {color = UColor(red: 0.3, green: ca/255, blue: (255-ca)/255, alpha: 1.0)}
-            if j == 2 {color = UColor(red: 0.5, green: (255-ca)/255, blue: 0.5/255, alpha: 1.0)}
-            
-        }
-
-        return node
-        
-    }
-    
-}
-
-
 //MARK: Protein mesh generator
-private class ProteinMesh {
+internal class ProteinMesh {
     
     private func newPeptidePlane(r1: Residue, r2: Residue, r3: Residue) -> PeptidePlane? {
 
@@ -220,7 +143,7 @@ private class ProteinMesh {
             planes.append(p)
         }
         
-        var prev = SCNVector3Make(0, 0, 0)
+        var prev = SCNVector3(0, 0, 0)
         
         for (i, p) in planes.enumerated() {
             if i > 0 && p.side.dotProduct(prev) < 0 {
