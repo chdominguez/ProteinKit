@@ -28,6 +28,22 @@ public struct Atom: Identifiable {
     public var info: String // Allows for further classification. For example: "CA", which denotes an alpha carbon in PDBs.
 }
 
+/// Returns the Element of the given String with an atomic symbol or the atomic number
+/// - Parameter string: String containing atomic symbol or number (i.e 'H' or '1' for Hydrogen)
+/// - Returns: Element matching atomic symbol or number
+internal func getAtom(fromString string: String, isPDB: Bool = false) -> Element? {
+    if isPDB {
+        return Element.allCases.first(where: {$0.rawValue == string.prefix(1)})
+    }
+    else {
+        if let atomicNumber = Int(string) {
+            return Element.allCases[atomicNumber - 1]
+        } else {
+            return Element.allCases.first(where: {$0.rawValue == string})
+        }
+    }
+}
+
 /// Molecule class. Contains an array of atoms as its single property
 public class Molecule {
     

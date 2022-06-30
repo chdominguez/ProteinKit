@@ -1,8 +1,17 @@
 import SceneKitPlus
+import MeshGenerator
+import SceneKit
 
 //MARK: ProteinKit error enums
 public enum ProteinKitError: Error {
-    case badMesh
+    case badMesh(String)
+    
+    var description: String {
+        switch self {
+        case .badMesh:
+            return "Error generating mesh"
+        }
+    }
 }
 
 //MARK: Main class. Generate SCNNode
@@ -17,28 +26,14 @@ public class ProteinKit {
     
     public func getProteinNode() throws -> SCNNode {
         
-        guard let meshes = ProteinMesh().createChainMesh(chain: residues) else {throw ProteinKitError.badMesh}
-        
-        guard meshes.count == residues.count - 5 else {throw ProteinKitError.badMesh}
-        
-        let proteinNode = SCNNode()
-        
-        // Each mesh is one aminoacid
-        for (m, mesh) in meshes.enumerated() {
-            let geometry = SCNGeometry(mesh)
-            geometry.name = residues[m].structure.rawValue
-            
-            let material = SCNMaterial()
-            material.diffuse.contents = rainbowNode(m)
-            geometry.materials = [material]
-            
-            let node = SCNNode(geometry: geometry)
-            //node.name = residues[m].type.symbol + "\(m+1)"
-            node.name = "aa"
-            proteinNode.addChildNode(node)
+        guard let meshes = ProteinMesh().createChainMesh(chain: residues) else {
+            throw ProteinKitError.badMesh("Error generating mesh")
         }
-
-        return proteinNode
+        
+        guard meshes.count == residues.count - 5 else {throw ProteinKitError.badMesh("Residue count do not match with mesh")}
+        
+        // Each mesh inside meshes is one aminoacid
+        return aminoNode(fromMesh: meshes)
         
     }
     
@@ -74,5 +69,25 @@ public class ProteinKit {
         else {return UColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)}
     }
     
+    private func aminoNode(fromMesh meshes: [Mesh]) -> SCNNode {
+        
+        let aminoNodes = SCNNode() // Root node for the amino acids
+        
+        for (m, mesh) in meshes.enumerated() {
+            let geometry = SCNGeometry(mesh)
+            geometry.name = residues[m].structure.rawValue
+            
+            let material = SCNMaterial()
+            material.diffuse.contents = rainbowNode(m)
+            geometry.materials = [material]
+            
+            let node = SCNNode(
+            //node.name = residues[m].type.symbol + "\(m+1)"
+            node.name = "aa"
+            aminoNodes.addChildNode(node)
+        }
+        
+        return aminoNodes
+    }
 }
 
