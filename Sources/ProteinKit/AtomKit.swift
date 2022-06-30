@@ -492,82 +492,236 @@ public enum Element: String, CaseIterable {
     // Default atom colors
     public  var color: Color {
         switch self {
-        case .hydrogen:
-            return .white
-        case .helium:
-            return Color(red: 69/255, green: 165/255, blue: 245/255)
-        case .lithium:
-            return .purple
-        case .beryllium:
-            return Color(red: 2/255, green: 128/255, blue: 14/255)
-        case .boron:
-            return Color(red: 255/255, green: 152/255, blue: 8/255)
-        case .carbon:
-            return .black
-        case .nitrogen:
-            return Color(red: 0/255, green: 0/255, blue: 255/255)
-        case .oxygen:
-            return .red
-        case .fluorine:
-            return .green
-        case .neon:
-            return Color(red: 69/255, green: 165/255, blue: 245/255)
-        case .sodium:
-            return .purple
-        case .magnesium:
-            return Color(red: 2/255, green: 128/255, blue: 14/255)
-        case .aluminium:
-            return .gray
-        case .silicon:
-            return Color(red: 240/255, green: 200/255, blue: 160/255)
-        case .phosphorus:
-            return .orange
-        case .sulphur:
-            return .yellow
-        case .chlorine:
-            return .green
-        case .bromine:
-            return Color(red: 150/255, green: 23/255, blue: 0/255)
-        case .iodine:
-            return Color(red: 109/255, green: 0/255, blue: 143/255)
-        // Noble gases
-        case .argon:
-            return Color(red: 69/255, green: 165/255, blue: 245/255)
-        case .krypton:
-            return Color(red: 69/255, green: 165/255, blue: 245/255)
-        case .xenon:
-            return Color(red: 69/255, green: 165/255, blue: 245/255)
-        case .radon:
-            return Color(red: 69/255, green: 165/255, blue: 245/255)
-        case .oganesson:
-            return Color(red: 69/255, green: 165/255, blue: 245/255)
-        // Alkali metals
-        case .potassium:
-            return .purple
-        case .rubidium:
-            return .purple
-        case .caesium:
-            return .purple
-        case .francium:
-            return .purple
-        /// Alkaline earths
-        case .calcium:
-            return Color(red: 2/255, green: 128/255, blue: 14/255)
-        case .strontium:
-            return Color(red: 2/255, green: 128/255, blue: 14/255)
-        case .barium:
-            return Color(red: 2/255, green: 128/255, blue: 14/255)
-        case .radium:
-            return Color(red: 2/255, green: 128/255, blue: 14/255)
-        /// Specific Ones
-        case .titanium:
-            return .gray
-        case .iron:
-            return Color(red: 158/255, green: 94/255, blue: 5/255)
-        case .dummy:
-            return .blue
-        default:
-            return .pink
+    var color: Color {
+        switch self {
+          case .hydrogen:
+              return .white  
+          //case .deuterium:
+              //return Color(red: 255/255, green: 255/255, blue: 192/255)
+          //case .tritium:
+              //return Color(red: 255/255, green: 255/255, blue: 192/255)
+          case .helium:
+              return Color(red: 217/255, green: 255/255, blue: 255/255)
+          case .lithium:
+              return Color(red: 204/255, green: 128/255, blue: 255/255)
+          case .beryllium:
+              return Color(red: 194/255, green: 255/255, blue: 0/255)
+          case .boron:
+              return Color(red: 255/255, green: 181/255, blue: 181/255)
+          case .carbon:
+              return Color(red: 144/255, green: 144/255, blue: 144/255)
+          //case .carbon13:
+              //return Color(red: 80/255, green: 80/255, blue: 80/255)
+          //case .carbon14:
+              //return Color(red: 64/255, green: 64/255, blue: 64/255)
+          case .nitrogen:
+              return Color(red: 48/255, green: 80/255, blue: 248/255)
+          //case .nitrogen15:
+              //return Color(red: 16/255, green: 80/255, blue: 80/255)
+          case .oxygen:
+              return Color(red: 255/255, green: 13/255, blue: 13/255)
+          case .fluorine:
+              return Color(red: 144/255, green: 224/255, blue: 80/255)
+          case .neon:
+              return Color(red: 179/255, green: 227/255, blue: 245/255)
+          case .sodium:
+              return Color(red: 171/255, green: 92/255, blue: 242/255)
+          case .magnesium:
+              return Color(red: 138/255, green: 255/255, blue: 0/255)
+          case .aluminium:
+              return Color(red: 191/255, green: 166/255, blue: 166/255)
+          case .silicon:
+              return Color(red: 240/255, green: 200/255, blue: 160/255)
+          case .phosphorus:
+              return Color(red: 255/255, green: 128/255, blue: 0/255)
+          case .sulphur:
+              return Color(red: 255/255, green: 255/255, blue: 48/255)
+          case .chlorine:
+              return Color(red: 31/255, green: 240/255, blue: 31/255)
+          case .argon:
+              return Color(red: 128/255, green: 209/255, blue: 227/255)
+          case .potassium:
+              return Color(red: 143/255, green: 64/255, blue: 212/255)
+          case .calcium:
+              return Color(red: 61/255, green: 255/255, blue: 0/255)
+          case .scandium:
+              return Color(red: 230/255, green: 230/255, blue: 230/255)
+          case .titanium:
+              return Color(red: 191/255, green: 194/255, blue: 199/255)
+          case .vanadium:
+              return Color(red: 166/255, green: 166/255, blue: 171/255)
+          case .chromium:
+              return Color(red: 138/255, green: 153/255, blue: 199/255)
+          case .manganese:
+              return Color(red: 156/255, green: 122/255, blue: 199/255)
+          case .iron:
+              return Color(red: 224/255, green: 102/255, blue: 51/255)
+          case .cobalt:
+              return Color(red: 240/255, green: 144/255, blue: 160/255)
+          case .nickel:
+              return Color(red: 80/255, green: 208/255, blue: 80/255)
+          case .copper:
+              return Color(red: 200/255, green: 128/255, blue: 51/255)
+          case .zinc:
+              return Color(red: 125/255, green: 128/255, blue: 176/255)
+          case .gallium:
+              return Color(red: 194/255, green: 143/255, blue: 143/255)
+          case .germanium:
+              return Color(red: 102/255, green: 143/255, blue: 143/255)
+          case .arsenic:
+              return Color(red: 189/255, green: 128/255, blue: 227/255)
+          case .selenium:
+              return Color(red: 255/255, green: 161/255, blue: 0/255)
+          case .bromine:
+              return Color(red: 166/255, green: 41/255, blue: 41/255)
+          case .krypton:
+              return Color(red: 92/255, green: 184/255, blue: 209/255)
+          case .rubidium:
+              return Color(red: 112/255, green: 46/255, blue: 176/255)
+          case .strontium:
+              return Color(red: 0/255, green: 255/255, blue: 0/255)
+          case .yttrium:
+              return Color(red: 148/255, green: 255/255, blue: 255/255)
+          case .zirconium:
+              return Color(red: 148/255, green: 224/255, blue: 224/255)
+          case .niobium:
+              return Color(red: 155/255, green: 194/255, blue: 201/255)
+          case .molybdenum:
+              return Color(red: 84/255, green: 181/255, blue: 181/255)
+          case .technecium:
+              return Color(red: 59/255, green: 158/255, blue: 158/255)
+          case .ruthenium:
+              return Color(red: 36/255, green: 143/255, blue: 143/255)
+          case .rhodium:
+              return Color(red: 10/255, green: 125/255, blue: 140/255)
+          case .palladium:
+              return Color(red: 0/255, green: 105/255, blue: 133/255)
+          case .silver:
+              return Color(red: 192/255, green: 192/255, blue: 192/255)
+          case .cadmium:
+              return Color(red: 255/255, green: 217/255, blue: 143/255)
+          case .indium:
+              return Color(red: 166/255, green: 117/255, blue: 115/255)
+          case .tin:
+              return Color(red: 102/255, green: 128/255, blue: 128/255)
+          case .antimony:
+              return Color(red: 158/255, green: 99/255, blue: 181/255)
+          case .tellurium:
+              return Color(red: 212/255, green: 122/255, blue: 0/255)
+          case .iodine:
+              return Color(red: 148/255, green: 0/255, blue: 148/255)
+          case .xenon:
+              return Color(red: 66/255, green: 158/255, blue: 176/255)
+          case .caesium:
+              return Color(red: 87/255, green: 23/255, blue: 143/255)
+          case .barium:
+              return Color(red: 0/255, green: 201/255, blue: 0/255)
+          case .lanthanum:
+              return Color(red: 112/255, green: 212/255, blue: 255/255)
+          case .cerium:
+              return Color(red: 255/255, green: 255/255, blue: 199/255)
+          case .praseodymium:
+              return Color(red: 217/255, green: 255/255, blue: 199/255)
+          case .neodymium:
+              return Color(red: 199/255, green: 255/255, blue: 199/255)
+          case .promethium:
+              return Color(red: 163/255, green: 255/255, blue: 199/255)
+          case .samarium:
+              return Color(red: 143/255, green: 255/255, blue: 199/255)
+          case .europium:
+              return Color(red: 97/255, green: 255/255, blue: 199/255)
+          case .gadolinium:
+              return Color(red: 69/255, green: 255/255, blue: 199/255)
+          case .terbium:
+              return Color(red: 48/255, green: 255/255, blue: 199/255)
+          case .dysprosium:
+              return Color(red: 31/255, green: 255/255, blue: 199/255)
+          case .holmium:
+              return Color(red: 0/255, green: 255/255, blue: 156/255)
+          case .erbium:
+              return Color(red: 0/255, green: 230/255, blue: 117/255)
+          case .thulium:
+              return Color(red: 0/255, green: 212/255, blue: 82/255)
+          case .ytterbium:
+              return Color(red: 0/255, green: 191/255, blue: 56/255)
+          case .lutetium:
+              return Color(red: 0/255, green: 171/255, blue: 36/255)
+          case .hafnium:
+              return Color(red: 77/255, green: 194/255, blue: 255/255)
+          case .tantalum:
+              return Color(red: 77/255, green: 166/255, blue: 255/255)
+          case .tungsten:
+              return Color(red: 33/255, green: 148/255, blue: 214/255)
+          case .rhenium:
+              return Color(red: 38/255, green: 125/255, blue: 171/255)
+          case .osmium:
+              return Color(red: 38/255, green: 102/255, blue: 150/255)
+          case .iridium:
+              return Color(red: 23/255, green: 84/255, blue: 135/255)
+          case .platinum:
+              return Color(red: 208/255, green: 208/255, blue: 224/255)
+          case .gold:
+              return Color(red: 255/255, green: 209/255, blue: 35/255)
+          case .mercury:
+              return Color(red: 184/255, green: 184/255, blue: 208/255)
+          case .thalium:
+              return Color(red: 166/255, green: 84/255, blue: 77/255)
+          case .lead:
+              return Color(red: 87/255, green: 89/255, blue: 97/255)
+          case .bismuth:
+              return Color(red: 158/255, green: 79/255, blue: 181/255)
+          case .polonium:
+              return Color(red: 171/255, green: 92/255, blue: 0/255)
+          case .astatine:
+              return Color(red: 117/255, green: 79/255, blue: 69/255)
+          case .radon:
+              return Color(red: 66/255, green: 130/255, blue: 150/255)
+          case .francium:
+              return Color(red: 66/255, green: 0/255, blue: 102/255)
+          case .actinium:
+              return Color(red: 112/255, green: 171/255, blue: 250/255)
+          case .thorium:
+              return Color(red: 0/255, green: 186/255, blue: 255/255)
+          case .protoactinium:
+              return Color(red: 0/255, green: 161/255, blue: 255/255)
+          case .uranium:
+              return Color(red: 0/255, green: 143/255, blue: 255/255)
+          case .neptunium:
+              return Color(red: 0/255, green: 128/255, blue: 255/255)
+          case .plutonium:
+              return Color(red: 0/255, green: 107/255, blue: 255/255)
+          case .americium:
+              return Color(red: 84/255, green: 92/255, blue: 242/255)
+          case .curium:
+              return Color(red: 120/255, green: 92/255, blue: 227/255)
+          case .berkelium:
+              return Color(red: 138/255, green: 79/255, blue: 227/255)
+          case .californium:
+              return Color(red: 161/255, green: 54/255, blue: 212/255)
+          case .einstenium:
+              return Color(red: 179/255, green: 31/255, blue: 212/255)
+          case .fermium:
+              return Color(red: 179/255, green: 31/255, blue: 186/255)
+          case .mendelevium:
+              return Color(red: 179/255, green: 13/255, blue: 166/255)
+          case .nobelium:
+              return Color(red: 189/255, green: 13/255, blue: 135/255)
+          case .lawrencium:
+              return Color(red: 199/255, green: 0/255, blue: 102/255)
+          case .rutherfordium:
+              return Color(red: 204/255, green: 0/255, blue: 89/255)
+          case .dubnium:
+              return Color(red: 209/255, green: 0/255, blue: 79/255)
+          case .seaborgium:
+              return Color(red: 217/255, green: 0/255, blue: 69/255)
+          case .bohrium:
+              return Color(red: 224/255, green: 0/255, blue: 56/255)
+          case .hassium:
+              return Color(red: 230/255, green: 0/255, blue: 46/255)
+          case .meitnerium:
+              return Color(red: 235/255, green: 0/255, blue: 38/255)
+          default:
+              return .pink
         }
     }
 
