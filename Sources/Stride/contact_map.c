@@ -1,10 +1,10 @@
 #include "stride.h"
     
-void ContactMap(CHAIN **Chain, int NChain, COMMAND *Cmd, *int CMError)
+void ContactMap(CHAIN **Chain, int NChain, COMMAND *Cmd, int *CMError)
 {
 
   register int Res1, Res2;
-  int Cn1, Cn2, CA1, CA2, CMError=0;
+  int Cn1, Cn2, CA1, CA2;
   float D;
   
   for( Cn1=0; Cn1<NChain; Cn1++ ) {
@@ -38,5 +38,5 @@ void ContactMap(CHAIN **Chain, int NChain, COMMAND *Cmd, *int CMError)
     }
   }
     die("Bad exit from contact map");
-    CMError=1
+    *CMError=1;
 }

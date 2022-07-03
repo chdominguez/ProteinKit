@@ -115,7 +115,7 @@ void BetaTurn(CHAIN **Chain, int Cn);
 void Bridge(char *Asn1, char *Asn2, CHAIN **Chain, int Cn1, int Cn2, PATTERN **Pat, int NPat);
 void *ckalloc(size_t bytes);
 void ContactOrder(CHAIN **Chain, int NChain, COMMAND *Cmd);
-void ContactMap(CHAIN **Chain, int NChain, COMMAND *Cmd);
+void ContactMap(CHAIN **Chain, int NChain, COMMAND *Cmd, int *CMError);
 void CorrectAsn(char *Asn, int Length, char SecStrType, char EditChar, int MaxLength);
 void CorrectAsnDouble(char *Asn1, char *Asn2, char *KnownAsn, int Length, 
 		      char SecStrType, char EditChar);

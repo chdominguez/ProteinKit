@@ -13,7 +13,8 @@ RChain stride(int argc, char **argv, int showReport)
 
   // Error variables.
 
-  int CMError=0, GlobalError=0;
+  int CMError=0;
+  int GlobalError=0;
     
   /* argc = ccommand(&argv); */ /* For Macintosh only, see readme.mac */
 
@@ -53,7 +54,7 @@ RChain stride(int argc, char **argv, int showReport)
     ContactOrder(Chain,NChain,Cmd);
 
   if( Cmd->ContactMap )
-    ContactMap(Chain,NChain,Cmd,CMError);
+    ContactMap(Chain,NChain,Cmd,&CMError);
 
   if( !strlen(Cmd->MapFileHelix) )
     PhiPsiMapHelix = DefaultHelixMap(Cmd);
@@ -105,13 +106,14 @@ RChain stride(int argc, char **argv, int showReport)
     rchain.NChain = NChain;
 
   // Global error declaration.
-  GlobalError = CMError
+    GlobalError = CMError;
 
   if( Cmd->MolScript )
     MolScript(Chain,NChain,Cmd);
 
   if (GlobalError == 1 )
-    die('There is something wrong here xd')
+      die("Stride found GlobalError == 1");
+#warning "Temporary"
 
   //for( i=0; i<Cn; i++ ) free(Chain[i]); // Memory will be freed later in Swift
   for( i=0; i<NHBond; i++ ) free(HBond[i]);
