@@ -1,8 +1,8 @@
 #include "stride.h"
 
-int OutSeq(CHAIN **Chain, int NChain, COMMAND *Cmd)
+int OutSeq(CHAIN **Chain, int NChain, COMMAND *Cmd) /*int OutSeqError)*/
 {
-  int Cn, Res;
+  int Cn, Res; /*OutSeqError=0;*/
   FILE *Seq;
 
   if( (int)strlen(Cmd->SeqFile) == 0 )
@@ -10,6 +10,7 @@ int OutSeq(CHAIN **Chain, int NChain, COMMAND *Cmd)
   else 
     if( (Seq = fopen(Cmd->SeqFile,"a")) == NULL )
       die("Error writing sequence file %s\n",Cmd->SeqFile);
+      /*OutSeqError=1;*/
 
   for( Cn=0; Cn<NChain; Cn++ ) {
 
