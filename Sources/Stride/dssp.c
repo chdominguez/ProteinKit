@@ -162,16 +162,17 @@ void InsertLast(DSSP *Dssp, CHAIN *Chain)
 ** Get DSSP secondary structure assignment for every residue            **
 **                                                                      **
 *************************************************************************/
-void GetDsspAsn(CHAIN **Chain, int NChain, COMMAND *Cmd)
+void GetDsspAsn(CHAIN **Chain, int NChain, COMMAND *Cmd) /* int DsspAsnError) */
 {
   DSSP **Dssp;
 
-  int NDsspChain=0, DsspCn, Cn, i;
+  int NDsspChain=0, DsspCn, Cn, i; /* DsspAsnError=0; */
 
   Dssp  = (DSSP **)ckalloc(MAX_CHAIN*sizeof(DSSP *));
   
   if( (NDsspChain = ReadDSSP(Chain,Dssp,Cmd)) == 0 )
     die("NODSSP Dssp file for %s not found\n",Chain[0]->File);
+    /* DsspAsnError=1; */
   
   for( Cn=0; Cn<NChain; Cn++ ) {
     
@@ -190,6 +191,7 @@ void GetDsspAsn(CHAIN **Chain, int NChain, COMMAND *Cmd)
 
     if( !CompPdbDssp(Chain[Cn],Dssp[DsspCn]) )
       die("PDBDSSPDIF Chain %s%c differs from %s%c\n",
+      /* DsspAsnError=1; */    
 	  Dssp[DsspCn]->File,Dssp[DsspCn]->Id,Chain[Cn]->File,SpaceToDash(Chain[Cn]->Id));
     
     for( i=0; i<Chain[Cn]->NRes; i++ ) {

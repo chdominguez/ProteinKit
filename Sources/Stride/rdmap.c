@@ -1,9 +1,9 @@
 #include "stride.h"
 
-int ReadPhiPsiMap(char *MapFile, float ***PhiPsiMap, COMMAND *Cmd)
+int ReadPhiPsiMap(char *MapFile, float ***PhiPsiMap, COMMAND *Cmd) /* int ReadPhiPsiError */
 {
 
-  int i, j, NFields, Cnt=0;
+  int i, j, NFields, Cnt=0; /* ReadPhiPsiError=0 */
   FILE *fi;
   BUFFER Buffer;
   char *Fields[MAX_FIELD];
@@ -38,7 +38,7 @@ int ReadPhiPsiMap(char *MapFile, float ***PhiPsiMap, COMMAND *Cmd)
     Cmd->PhiPsiStep = (MAXPHIPSI - MINPHIPSI)/(float)Cmd->NPixel;
   }
   
-  if( !Cmd->NPixel ) die("Error reading PhiPsiMap file %s\n",MapFile);
+  if( !Cmd->NPixel ) die("Error reading PhiPsiMap file %s\n",MapFile); /*ReadPhiPsiError=1*/
 
   return(Cmd->NPixel);
 }

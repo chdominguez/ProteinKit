@@ -10,6 +10,11 @@ RChain stride(int argc, char **argv, int showReport)
   int Cn, NChain=0, NHBond=0, ValidChain=0;
   float **PhiPsiMapHelix, **PhiPsiMapSheet;
   register int i;
+
+  // Error variables.
+
+  int CMError=0;
+  int GlobalError=0;
     
   /* argc = ccommand(&argv); */ /* For Macintosh only, see readme.mac */
 
@@ -20,7 +25,9 @@ RChain stride(int argc, char **argv, int showReport)
   ProcessStrideOptions(argv,argc,Cmd);
 
   if( !ReadPDBFile(Chain,&NChain,Cmd) || !NChain )
+  
     die("Error reading PDB file %s\n",Cmd->InputFile);
+    /*readerror=1 */
   
   for( Cn=0; Cn<NChain; Cn++ )
     ValidChain += CheckChain(Chain[Cn],Cmd);
@@ -30,6 +37,7 @@ RChain stride(int argc, char **argv, int showReport)
  */
   if( !ValidChain ) 
     die("No valid chain in %s\n",Chain[0]->File);
+    /* validchainerror=1 */
   
   if( Cmd->BrookhavenAsn )
     GetPdbAsn(Chain,NChain);
@@ -46,7 +54,7 @@ RChain stride(int argc, char **argv, int showReport)
     ContactOrder(Chain,NChain,Cmd);
 
   if( Cmd->ContactMap )
-    ContactMap(Chain,NChain,Cmd);
+    ContactMap(Chain,NChain,Cmd,&CMError);
 
   if( !strlen(Cmd->MapFileHelix) )
     PhiPsiMapHelix = DefaultHelixMap(Cmd);
@@ -63,6 +71,7 @@ RChain stride(int argc, char **argv, int showReport)
   
   if( (NHBond = FindHydrogenBonds(Chain,Cn,HBond,Cmd)) == 0 ) 
     die("No hydrogen bonds found in %s\n",Cmd->InputFile);
+    /*hydrogenbondserror=1*/
   
   NoDoubleHBond(HBond,NHBond);
   
@@ -96,8 +105,15 @@ RChain stride(int argc, char **argv, int showReport)
     rchain.chain = Chain;
     rchain.NChain = NChain;
 
+  // Global error declaration.
+    GlobalError = CMError;
+
   if( Cmd->MolScript )
     MolScript(Chain,NChain,Cmd);
+
+  if (GlobalError == 1 )
+      die("Stride found GlobalError == 1");
+#warning "Temporary"
 
   //for( i=0; i<Cn; i++ ) free(Chain[i]); // Memory will be freed later in Swift
   for( i=0; i<NHBond; i++ ) free(HBond[i]);

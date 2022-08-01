@@ -1,10 +1,10 @@
 #include "stride.h"
 #define CO_DIST                    6.0
     
-void ContactOrder(CHAIN **Chain, int NChain, COMMAND *Cmd )
+void ContactOrder(CHAIN **Chain, int NChain, COMMAND *Cmd ) /*int COError)*/
 {
   register int Res1, Res2, At1, At2;
-  int Cn, From, To, NumberOfContacts;
+  int Cn, From, To, NumberOfContacts; /*COError=0;*/
   char PDB_Start[RES_FIELD], PDB_End[RES_FIELD];
   double CO;
   
@@ -63,4 +63,5 @@ void ContactOrder(CHAIN **Chain, int NChain, COMMAND *Cmd )
   }
     
     die("Bad exit from contact order");
+    /*COError=1;*/
 }
