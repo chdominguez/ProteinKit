@@ -118,6 +118,7 @@ public enum bondTypes {
 
 public enum AtomStyle: String, CaseIterable {
     case ballAndStick = "Ball and Stick"
+    case vanderwaals = "Van der Waals"
     case backBone = "Backbone"
     case cartoon = "Cartoon"
 }

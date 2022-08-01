@@ -7,15 +7,3 @@
 
 import SceneKitPlus
 
-public class ProteinNode: SCNNode {
-    var aa: AminoAcid = .ala
-    
-    public init(proteinGeometry: SCNGeometry?) {
-        super.init(geometry: geometry)
-    }
-    
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
-}

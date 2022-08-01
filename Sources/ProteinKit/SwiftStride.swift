@@ -50,13 +50,10 @@ public class Stride {
         guard let _ = result else {
             return nil
         }
-
-        
         let aminos = processResult(result: result!)
         
         // Frees the memory
         result!.chain.deallocate()
-        
         result = nil
         
         return aminos

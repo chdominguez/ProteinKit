@@ -81,7 +81,7 @@ public class ProteinKit {
             material.diffuse.contents = rainbowNode(m)
             geometry.materials = [material]
             
-            let node = SCNNode(
+            let node = SCNNode(geometry: geometry)
             //node.name = residues[m].type.symbol + "\(m+1)"
             node.name = "aa"
             aminoNodes.addChildNode(node)
