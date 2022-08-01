@@ -492,8 +492,6 @@ public enum Element: String, CaseIterable {
     // Default atom colors
     public  var color: Color {
         switch self {
-    var color: Color {
-        switch self {
           case .hydrogen:
               return .white  
           //case .deuterium:
