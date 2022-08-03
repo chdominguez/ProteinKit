@@ -105,14 +105,6 @@ public class ProteinKit {
             material.diffuse.contents = rainbowColor(m)
             geometry.materials = [material]
             
-<<<<<<< HEAD
-            let node = SCNNode(geometry: geometry)
-            //node.name = residues[m].type.symbol + "\(m+1)"
-            node.name = "aa"
-            aminoNodes.addChildNode(node)
-=======
-            //atomNodes(atoms: residues[m].atoms, to: rootNode, forResidue: m, hidden: false)
-            
             let node = SCNNode(geometry: geometry)
             node.name = "C_\(residues[m].type.code)_\(m)"
             rootNode.addChildNode(node)
@@ -168,7 +160,6 @@ public class AtomGeometries {
             sphere.radius = element.radius
             sphere.materials = [materials[element]!]
             atoms[element] = sphere
->>>>>>> ba635d5a4aefe2fbae74cdbfb5ff1c95e1d02572
         }
         
         return atoms
