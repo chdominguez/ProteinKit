@@ -99,15 +99,18 @@ public class ProteinKit {
     
     private func aminoNode(fromMesh meshes: [Mesh], to rootNode: SCNNode) {
                 
-        for (m, mesh) in meshes.enumerated() {
-            let geometry = SCNGeometry(mesh)
-            let material = SCNMaterial()
-            material.diffuse.contents = rainbowColor(m)
-            geometry.materials = [material]
-            
-            let node = SCNNode(geometry: geometry)
-            node.name = "C_\(residues[m].type.code)_\(m)"
-            rootNode.addChildNode(node)
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            for (m, mesh) in meshes.enumerated() {
+                let geometry = SCNGeometry(mesh)
+                let material = SCNMaterial()
+                #warning("Temporary disable rainbow for color perfomance")
+                material.diffuse.contents = rainbowColor(1)
+                geometry.materials = [material]
+                
+                let node = SCNNode(geometry: geometry)
+                node.name = "C_\(residues[m].type.code)_\(m)"
+                rootNode.addChildNode(node)
+            }
         }
     }
     
@@ -115,17 +118,18 @@ public class ProteinKit {
         
         let resNumber = forResidue ?? 0 // If residue number its not specified assume it does not velong to any residue (see atom numbering for reference at the bottom of this file)
         
-        for atom in atoms {
-            let atomNode = SCNNode()
-            atomNode.position = atom.position
-            atomNode.isHidden = hidden
-            atomNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-            atomNode.geometry = atomGeometries.atoms[atom.type]
-            atomNode.constraints = [SCNBillboardConstraint()]
-            atomNode.name = "A_\(atom.type.rawValue)_\(atom.number)_\(resNumber)"
-            rootNode.addChildNode(atomNode)
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            for atom in atoms {
+                let atomNode = SCNNode()
+                atomNode.position = atom.position
+                atomNode.isHidden = hidden
+                atomNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                atomNode.geometry = atomGeometries.atoms[atom.type]
+                atomNode.constraints = [SCNBillboardConstraint()]
+                atomNode.name = "A_\(atom.type.rawValue)_\(atom.number)_\(resNumber)"
+                rootNode.addChildNode(atomNode)
+            }
         }
-        
     }
     
 }
