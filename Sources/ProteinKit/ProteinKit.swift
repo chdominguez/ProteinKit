@@ -108,7 +108,7 @@ public class ProteinKit {
                 geometry.materials = [material]
                 
                 let node = SCNNode(geometry: geometry)
-                node.name = "C_\(residues[m].type.code)_\(m)"
+                node.name = "C_\(residues[m].type.code)_\(m)_\(moleculeName)"
                 rootNode.addChildNode(node)
             }
         }
