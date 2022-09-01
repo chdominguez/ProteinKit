@@ -28,7 +28,6 @@ public class ProteinKit {
     public init(residues: [Residue], colorSettings: ProteinColors? = nil, moleculeName: String? = nil) {
         self.residues = residues
         self.moleculeName = moleculeName ?? "Protein"
-        
         if let colorSettings = colorSettings {
             self.atomGeometries = AtomGeometries(colors: colorSettings)
         }
@@ -98,20 +97,37 @@ public class ProteinKit {
     }
     
     private func aminoNode(fromMesh meshes: [Mesh], to rootNode: SCNNode) {
-                
+        let helixNodes = SCNNode()
+        helixNodes.name = "Helices"
+        let sheetsNodes = SCNNode()
+        sheetsNodes.name = "Sheets"
+        let otherNodes = SCNNode()
+        otherNodes.name = "Other"
         DispatchQueue.global(qos: .userInitiated).async { [self] in
             for (m, mesh) in meshes.enumerated() {
                 let geometry = SCNGeometry(mesh)
                 let material = SCNMaterial()
                 #warning("Temporary disable rainbow for color perfomance")
-                material.diffuse.contents = rainbowColor(1)
+                //material.diffuse.contents = rainbowColor(m)
+                material.diffuse.contents = UColor.brown
                 geometry.materials = [material]
                 
                 let node = SCNNode(geometry: geometry)
-                node.name = "C_\(residues[m].type.code)_\(m)_\(moleculeName)"
-                rootNode.addChildNode(node)
+                node.name = "C_\(residues[m].type.code)_\(m)_\(moleculeName)_\(residues[m].structure.priority)"
+                switch residues[m].structure {
+                case .alphaHelix, .helix310, .phiHelix:
+                    helixNodes.addChildNode(node)
+                case .strand:
+                    sheetsNodes.addChildNode(node)
+                default:
+                    otherNodes.addChildNode(node)
+                }
             }
         }
+        
+        rootNode.addChildNode(helixNodes)
+        rootNode.addChildNode(sheetsNodes)
+        rootNode.addChildNode(otherNodes)
     }
     
     public func atomNodes(atoms: [Atom], to rootNode: SCNNode, forResidue: Int? = nil, hidden: Bool = true) {
