@@ -94,6 +94,7 @@ public class PDBReader {
 #warning("TODO: Improve this PDB reader for different columns")
                     case 11:
                         dI = 6
+                        if splitted.contains("DT") {dI = 5}
                     default:
                         // ErrorManager.shared.lineError = errorLine
                         // ErrorManager.shared.errorDescription = "Invalid PDB"
@@ -102,7 +103,6 @@ public class PDBReader {
                 }
                 
                 let atomString = String(splitted[2])
-                
                 guard let element = getAtom(fromString: atomString, isPDB: true), let x = Float(splitted[dI]), let y = Float(splitted[dI + 1]), let z = Float(splitted[dI + 2]) else {throw PDBErrors.PDBError}
                 
                 let position = SCNVector3(x, y, z)

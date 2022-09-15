@@ -111,7 +111,7 @@ public class ProteinKit {
                 //material.diffuse.contents = rainbowColor(m)
                 material.diffuse.contents = UColor.brown
                 geometry.materials = [material]
-                
+          
                 let node = SCNNode(geometry: geometry)
                 node.name = "C_\(residues[m].type.code)_\(m)_\(moleculeName)_\(residues[m].structure.priority)"
                 switch residues[m].structure {
