@@ -28,7 +28,6 @@ public class ProteinKit {
     public init(residues: [Residue], colorSettings: ProteinColors? = nil, moleculeName: String? = nil) {
         self.residues = residues
         self.moleculeName = moleculeName ?? "Protein"
-        
         if let colorSettings = colorSettings {
             self.atomGeometries = AtomGeometries(colors: colorSettings)
         }
@@ -98,34 +97,55 @@ public class ProteinKit {
     }
     
     private func aminoNode(fromMesh meshes: [Mesh], to rootNode: SCNNode) {
-                
-        for (m, mesh) in meshes.enumerated() {
-            let geometry = SCNGeometry(mesh)
-            let material = SCNMaterial()
-            material.diffuse.contents = rainbowColor(m)
-            geometry.materials = [material]
-            
-            let node = SCNNode(geometry: geometry)
-            node.name = "C_\(residues[m].type.code)_\(m)"
-            rootNode.addChildNode(node)
+        let helixNodes = SCNNode()
+        helixNodes.name = "Helices"
+        let sheetsNodes = SCNNode()
+        sheetsNodes.name = "Sheets"
+        let otherNodes = SCNNode()
+        otherNodes.name = "Other"
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            for (m, mesh) in meshes.enumerated() {
+                let geometry = SCNGeometry(mesh)
+                let material = SCNMaterial()
+                #warning("Temporary disable rainbow for color perfomance")
+                //material.diffuse.contents = rainbowColor(m)
+                material.diffuse.contents = UColor.brown
+                geometry.materials = [material]
+          
+                let node = SCNNode(geometry: geometry)
+                node.name = "C_\(residues[m].type.code)_\(m)_\(moleculeName)_\(residues[m].structure.priority)"
+                switch residues[m].structure {
+                case .alphaHelix, .helix310, .phiHelix:
+                    helixNodes.addChildNode(node)
+                case .strand:
+                    sheetsNodes.addChildNode(node)
+                default:
+                    otherNodes.addChildNode(node)
+                }
+            }
         }
+        
+        rootNode.addChildNode(helixNodes)
+        rootNode.addChildNode(sheetsNodes)
+        rootNode.addChildNode(otherNodes)
     }
     
     public func atomNodes(atoms: [Atom], to rootNode: SCNNode, forResidue: Int? = nil, hidden: Bool = true) {
         
         let resNumber = forResidue ?? 0 // If residue number its not specified assume it does not velong to any residue (see atom numbering for reference at the bottom of this file)
         
-        for atom in atoms {
-            let atomNode = SCNNode()
-            atomNode.position = atom.position
-            atomNode.isHidden = hidden
-            atomNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-            atomNode.geometry = atomGeometries.atoms[atom.type]
-            atomNode.constraints = [SCNBillboardConstraint()]
-            atomNode.name = "A_\(atom.type.rawValue)_\(atom.number)_\(resNumber)"
-            rootNode.addChildNode(atomNode)
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            for atom in atoms {
+                let atomNode = SCNNode()
+                atomNode.position = atom.position
+                atomNode.isHidden = hidden
+                atomNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                atomNode.geometry = atomGeometries.atoms[atom.type]
+                atomNode.constraints = [SCNBillboardConstraint()]
+                atomNode.name = "A_\(atom.type.rawValue)_\(atom.number)_\(resNumber)"
+                rootNode.addChildNode(atomNode)
+            }
         }
-        
     }
     
 }
