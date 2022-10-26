@@ -16,8 +16,7 @@ public class PDBReader {
     private var errorLine: Int = 0
     
     // Some pdbs have variable column size, with data placed in different columns
-    var ncolumns = 0 // Number of columns
-    var dI = 0 // Distance index. Column where X coordinates are.
+    var nindex = 0 // Number of columns
     
     // Keep track of the number of atoms
     var natoms = 0
@@ -81,22 +80,20 @@ public class PDBReader {
                 //Increment number of atoms
                 natoms += 1
                 // First check number of columns to see if it's a compatible PDB
-                if ncolumns == 0 {
-                    for n in splitted {
-                        ncolumns += 1
-                        print(n)
+                if nindex == 0 {
+                    for (i,n) in splitted.enumerated() {
+                        nindex = i
                         guard let dbl = Double(n) else {continue}
                         if floor(dbl) != dbl {
                             break
                         }
+                        
                     }
                 }
-                
                 let atomString = String(splitted[2])
-                guard let element = getAtom(fromString: atomString, isPDB: true), let x = Float(splitted[dI]), let y = Float(splitted[dI + 1]), let z = Float(splitted[dI + 2]) else {throw ProteinKitError.PDBError}
+                guard let element = getAtom(fromString: atomString, isPDB: true), let x = Float(splitted[nindex]), let y = Float(splitted[nindex + 1]), let z = Float(splitted[nindex + 2]) else {throw ProteinKitError.PDBError}
                 
                 let position = SCNVector3(x, y, z)
-                print(position)
                 
                 var atom = Atom(position: position, type: element, number: natoms)
                 
