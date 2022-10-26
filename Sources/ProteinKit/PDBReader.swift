@@ -8,10 +8,6 @@
 import SceneKitPlus
 import Combine
 
-private enum PDBErrors: Error {
-    case PDBError
-}
-
 public class PDBReader {
     public init() { }
     
@@ -33,6 +29,7 @@ public class PDBReader {
     let backBone = Molecule()
     
     public func readPDB(from fileURL: URL) throws {
+        guard fileURL.startAccessingSecurityScopedResource() else {throw ProteinKitError.noAccess}
         let splitFile = try! String(contentsOf: fileURL).split(separator: "\n")
         
         // Assign the PDB error for cleaner code
@@ -50,7 +47,7 @@ public class PDBReader {
         step.backBone = backBone
         
         // Run the Stride algorithm to obtain secondary structure
-        guard let aminos = Stride.predict(from: fileURL.path) else {throw PDBErrors.PDBError}
+        guard let aminos = Stride.predict(from: fileURL.path) else {throw ProteinKitError.PDBError}
         
         step.res = aminos
         
@@ -85,27 +82,21 @@ public class PDBReader {
                 natoms += 1
                 // First check number of columns to see if it's a compatible PDB
                 if ncolumns == 0 {
-                    ncolumns = splitted.count
-                    switch ncolumns {
-                    case 12:
-                        dI = 6 // X values start at index 6
-                    case 10:
-                        dI = 5 // X values start at index 5
-#warning("TODO: Improve this PDB reader for different columns")
-                    case 11:
-                        dI = 6
-                        if splitted.contains("DT") {dI = 5}
-                    default:
-                        // ErrorManager.shared.lineError = errorLine
-                        // ErrorManager.shared.errorDescription = "Invalid PDB"
-                        throw PDBErrors.PDBError
+                    for n in splitted {
+                        ncolumns += 1
+                        print(n)
+                        guard let dbl = Double(n) else {continue}
+                        if floor(dbl) != dbl {
+                            break
+                        }
                     }
                 }
                 
                 let atomString = String(splitted[2])
-                guard let element = getAtom(fromString: atomString, isPDB: true), let x = Float(splitted[dI]), let y = Float(splitted[dI + 1]), let z = Float(splitted[dI + 2]) else {throw PDBErrors.PDBError}
+                guard let element = getAtom(fromString: atomString, isPDB: true), let x = Float(splitted[dI]), let y = Float(splitted[dI + 1]), let z = Float(splitted[dI + 2]) else {throw ProteinKitError.PDBError}
                 
                 let position = SCNVector3(x, y, z)
+                print(position)
                 
                 var atom = Atom(position: position, type: element, number: natoms)
                 

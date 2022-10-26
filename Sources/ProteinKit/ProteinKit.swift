@@ -6,11 +6,17 @@ import SceneKit
 //MARK: ProteinKit error enums
 public enum ProteinKitError: Error {
     case badMesh(String)
-    
+    case noAccess
+    case PDBError
+
     var description: String {
         switch self {
         case .badMesh:
             return "Error generating mesh"
+        case .noAccess:
+            return "Cannot open file"
+        case .PDBError:
+            return "Error reading PDB"
         }
     }
 }
@@ -134,7 +140,7 @@ public class ProteinKit {
         
         let resNumber = forResidue ?? 0 // If residue number its not specified assume it does not velong to any residue (see atom numbering for reference at the bottom of this file)
         
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
+        //DispatchQueue.global(qos: .userInitiated).async { [self] in
             for atom in atoms {
                 let atomNode = SCNNode()
                 atomNode.position = atom.position
@@ -145,7 +151,7 @@ public class ProteinKit {
                 atomNode.name = "A_\(atom.type.rawValue)_\(atom.number)_\(resNumber)"
                 rootNode.addChildNode(atomNode)
             }
-        }
+        //}
     }
     
 }
