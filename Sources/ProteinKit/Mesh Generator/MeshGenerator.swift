@@ -118,8 +118,9 @@ internal func translateProfile(_ p1: [SCNVector3], _ dx: Double, _ dy: Double) -
 internal class ProteinMesh {
     
     private func newPeptidePlane(r1: Residue, r2: Residue, r3: Residue) -> PeptidePlane? {
-
+        
         guard let ca1 = r1.atoms.last(where: { $0.info == "CA" }), let ca2 = r2.atoms.last(where: { $0.info == "CA" }), let o1 = r1.atoms.last(where: { $0.info == "O" }) else { return nil }
+        
         
         let a = (ca2.position - ca1.position).normalized()
         let b = (o1.position - ca1.position).normalized()

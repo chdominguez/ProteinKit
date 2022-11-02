@@ -50,6 +50,7 @@ public class Stride {
         guard let _ = result else {
             return nil
         }
+        
         let aminos = processResult(result: result!)
         
         // Frees the memory
@@ -127,10 +128,13 @@ private func getAtoms(fromCres r: UnsafeMutablePointer<RESIDUE>) -> [Atom] {
     
     let coords = Mirror(reflecting: r.pointee.Coord).children.map({$0.value as! (Float,Float,Float)})
     let atoms = Mirror(reflecting: r.pointee.AtomType).children.map({$0.value})
+    
     for (i,atom) in atoms.enumerated() {
         
         let atomInfo = unsafePointerToString(value: atom)
-        if atomInfo.isEmpty || atomInfo == "H" {break}
+        // This atomInfo == "H" is causing some PDBs to not be rendered. See #35
+        //if atomInfo.isEmpty || atomInfo == "H" {break}
+        if atomInfo.isEmpty {break}
         
         guard let at = getAtom(fromString: atomInfo, isPDB: true) else {continue}
         let x = UFloat(coords[i].0)

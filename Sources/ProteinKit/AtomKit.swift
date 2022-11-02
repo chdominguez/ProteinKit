@@ -31,15 +31,15 @@ public struct Atom: Identifiable {
 /// Returns the Element of the given String with an atomic symbol or the atomic number
 /// - Parameter string: String containing atomic symbol or number (i.e 'H' or '1' for Hydrogen)
 /// - Returns: Element matching atomic symbol or number
-internal func getAtom(fromString string: String, isPDB: Bool = false) -> Element? {
+internal func getAtom(fromString aString: String, isPDB: Bool = false) -> Element? {
     if isPDB {
-        return Element.allCases.first(where: {$0.rawValue == string.prefix(1)})
+        return Element.allCases.first(where: {$0.rawValue == aString.prefix(1)})
     }
     else {
-        if let atomicNumber = Int(string) {
+        if let atomicNumber = Int(aString) {
             return Element.allCases[atomicNumber - 1]
         } else {
-            return Element.allCases.first(where: {$0.rawValue == string})
+            return Element.allCases.first(where: {$0.rawValue == aString})
         }
     }
 }

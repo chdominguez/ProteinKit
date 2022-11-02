@@ -108,20 +108,6 @@ public class PDBReader {
                 currentMolecule.atoms.append(atom)
                 
             }
-            //            case "HELIX":
-            //                do {
-            //                    structures.append(.alphaHelix)
-            //                    let from = Int(splitted[5])!
-            //                    let to = Int(splitted[8])!
-            //                    structuresFromTo.append((from,to))
-            //                }
-            //            case "SHEET":
-            //                do {
-            //                    structures.append(.strand)
-            //                    let from = Int(splitted[6])!
-            //                    let to = Int(splitted[9])!
-            //                    structuresFromTo.append((from,to))
-            //                }
         default: return
         }
     }
