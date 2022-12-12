@@ -137,6 +137,8 @@ internal class ProteinMesh {
         
         var planes: [PeptidePlane] = []
         
+        #warning("Fix return error when count is less")
+        
         for i in 0..<chain.count - 2 {
             guard let p = newPeptidePlane(r1: chain[i], r2: chain[i+1], r3: chain[i+2]) else { continue }
             planes.append(p)
